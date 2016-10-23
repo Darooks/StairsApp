@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:text="Pojedynczy sensor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView" />
+
+    <Switch
+        android:text="Włączony/Wyłączony"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch_on_off"
+        android:layout_marginTop="36dp"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_width="280dp" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_sensor_order"
+        android:layout_below="@+id/switch_on_off"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

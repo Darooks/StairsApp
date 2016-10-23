@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">StairsApp</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="sensor_order_array">
+        <item>test one</item>
+        <item>test two</item>
+        <item>test three</item>
+        <item>test four</item>
+        <item>test five</item>
+    </string-array>
+</resources>
