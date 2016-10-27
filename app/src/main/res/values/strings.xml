@@ -11,4 +11,10 @@
         <item>test four</item>
         <item>test five</item>
     </string-array>
+
+    <string-array name="sensor_type_array">
+        <item>type one</item>
+        <item>type two</item>
+        <item>type three</item>
+    </string-array>
 </resources>

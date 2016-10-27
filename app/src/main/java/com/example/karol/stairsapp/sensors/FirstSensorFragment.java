@@ -23,13 +23,18 @@ public class FirstSensorFragment extends Fragment{
 
         View view = inflater.inflate(R.layout.single_sensor_layout,null);
 
-        /* Konfiguracja spinnera */
-//        Spinner spinner_order = (Spinner) view.findViewById(R.id.spinner_sensor_order);
-//        String[] order_items = getResources().getStringArray(R.array.sensor_order_array);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.single_sensor_layout, order_items);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner_order.setAdapter(adapter);
+        /* Konfiguracja spinnerów */
+        Spinner spinner_order = (Spinner) view.findViewById(R.id.spinner_sensor_order);
+        ArrayAdapter<CharSequence> adapter_spinner_order = ArrayAdapter.createFromResource(getActivity(),
+                R.array.sensor_order_array, android.R.layout.simple_spinner_item);
+        adapter_spinner_order.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_order.setAdapter(adapter_spinner_order);
 
+        Spinner spinner_type = (Spinner) view.findViewById(R.id.spinner_sensor_type);
+        ArrayAdapter<CharSequence> adapter_spinner_type = ArrayAdapter.createFromResource(getActivity(),
+                R.array.sensor_type_array, android.R.layout.simple_spinner_dropdown_item);
+        adapter_spinner_type.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_type.setAdapter(adapter_spinner_type);
 
         return view;
     }
