@@ -42,7 +42,7 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/spinner_sensor_type"
         android:layout_below="@+id/spinner_sensor_order"
         android:layout_alignEnd="@+id/switch_on_off" />

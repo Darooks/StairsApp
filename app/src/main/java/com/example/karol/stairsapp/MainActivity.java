@@ -5,6 +5,7 @@ package com.example.karol.stairsapp;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,9 +13,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public LightConfiguration lightConfiguration = new LightConfiguration();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +88,21 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentManager fragmentManager = getSupportFragmentManager();
 
+        /* Wykonianie obiektu ktory ma byc przesylany pomiedzy fragmentami */
+        android.support.v4.app.FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+        Bundle bundles = new Bundle();
+
+        if (lightConfiguration != null) {
+            bundles.putSerializable("lightConfiguration", lightConfiguration);
+        }
+        else {
+            Toast.makeText(this, "Light Configuration is null object!", Toast.LENGTH_LONG).show();
+        }
+
         if (id == R.id.nav_sensors) {
+            
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new SensorsFragment()).commit();
         } else if (id == R.id.nav_status) {
