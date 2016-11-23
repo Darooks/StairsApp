@@ -3,33 +3,20 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <TextView
-        android:text="Status"
+        android:text="Konfiguracja"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="85dp"
+        android:id="@+id/textView2"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp"
-        android:id="@+id/textView2" />
+        android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:text="Jasność"
+    <Button
+        android:text="Publikuj Wiadomość"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/seekbar_brightness"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="11dp"
-        android:layout_marginBottom="30dp"
-        android:id="@+id/brithness_title"
-        android:textColor="@android:color/black" />
-
-    <SeekBar
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:id="@+id/seekbar_brightness"
-        android:progress="0"
-        android:layout_width="match_parent"
-        android:max="4095"
         android:layout_below="@+id/textView2"
-        android:layout_alignParentEnd="true" />
-
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:id="@+id/button_publish" />
 </RelativeLayout>

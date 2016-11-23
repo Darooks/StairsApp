@@ -1,7 +1,7 @@
-package com.example.karol.stairsapp.sensors;
+package com.example.karol.stairsapp.SensorTabs;
 
 /**
- * Created by Karol on 2016-10-23.
+ * Created by Karol on 2016-11-23.
  */
 
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.karol.stairsapp.R;
 
-public class SecondSensorFragment extends Fragment{
+public class SensorTab extends Fragment{
 
     @Nullable
     @Override

@@ -3,18 +3,4 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-
-    <string-array name="sensor_order_array">
-        <item>test one</item>
-        <item>test two</item>
-        <item>test three</item>
-        <item>test four</item>
-        <item>test five</item>
-    </string-array>
-
-    <string-array name="sensor_type_array">
-        <item>type one</item>
-        <item>type two</item>
-        <item>type three</item>
-    </string-array>
 </resources>

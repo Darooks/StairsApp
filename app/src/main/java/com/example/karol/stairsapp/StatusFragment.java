@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -30,42 +29,19 @@ import static android.content.ContentValues.TAG;
 public class StatusFragment extends Fragment{
 
     View myView;
-    private int brightness = 0;
 
     static String MQTTHOST = "tcp://m20.cloudmqtt.com:19951";
     static String USERNAME = "hjlgqbkb";
     static String PASSWORD = "k_fHdTL-RXmW";
-    static String topicStr = "esp-mqtt-topic";
+    String topicStr = "esp-mqtt-topic";
     MqttAndroidClient client;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.status_layout, container, false);
-        MakeConnection();
-        final SeekBar light_seekbar = (SeekBar) myView.findViewById(R.id.seekbar_brightness);
-        light_seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                brightness = light_seekbar.getProgress();
-                SendBrightness();
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
 
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        return myView;
-    }
-
-    private void MakeConnection() {
         /* <MQTT connection> */
         String clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(this.getActivity(), MQTTHOST,
@@ -97,20 +73,29 @@ public class StatusFragment extends Fragment{
             e.printStackTrace();
         }
         /* </MQTT connection> */
-    }
-    public void SendBrightness() {
-        /* Prepare message to send */
-        String string_message = "{\"msgType\":\"BRIGHTNESS\", \"object\":{\"value\":\"" + brightness + "\"}}";
 
+        Button publish_button = (Button) myView.findViewById(R.id.button_publish);
+        publish_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Publish(myView);
+            }
+        });
+
+        return myView;
+    }
+
+    public void Publish(View v) {
         String topic = topicStr;
-        //String payload = "Hello from MQTT";
+        String payload = "Hello from MQTT";
         byte[] encodedPayload = new byte[0];
         try {
-            encodedPayload = string_message.getBytes("UTF-8");
+            encodedPayload = payload.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
             client.publish(topic, message); // client.publish(topic, message.getBytes(), 0, false);
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
         }
+        Toast.makeText(getActivity(), "Sent the message", Toast.LENGTH_LONG).show();
     }
 }

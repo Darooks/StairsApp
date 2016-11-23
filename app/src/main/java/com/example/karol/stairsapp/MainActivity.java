@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -104,13 +103,13 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_sensors) {
             
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new SensorsFragment()).commit();
+                    .replace(R.id.content_frame, new ActivityFragment()).commit();
         } else if (id == R.id.nav_status) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new StatusFragment()).commit();
+                    .replace(R.id.content_frame, new ConfigurationFragment()).commit();
         } else if (id == R.id.nav_configuration) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new ConfigurationFragment()).commit();
+                    .replace(R.id.content_frame, new StatusFragment()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

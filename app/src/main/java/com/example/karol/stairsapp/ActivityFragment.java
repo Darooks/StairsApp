@@ -12,14 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.karol.stairsapp.sensors.FirstSensorFragment;
-import com.example.karol.stairsapp.sensors.SecondSensorFragment;
+import com.example.karol.stairsapp.SensorTabs.SensorTab;
+import com.example.karol.stairsapp.SensorTabs.LedTab;
 
 /**
  * Created by Karol on 2016-10-23.
  */
 
-public class SensorsFragment extends Fragment {
+public class ActivityFragment extends Fragment {
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
     public static int int_items = 2 ;
@@ -70,8 +70,8 @@ public class SensorsFragment extends Fragment {
         public Fragment getItem(int position)
         {
             switch (position){
-                case 0 : return new FirstSensorFragment();
-                case 1 : return new SecondSensorFragment();
+                case 0 : return new SensorTab();
+                case 1 : return new LedTab();
             }
 
             return null;
@@ -91,9 +91,9 @@ public class SensorsFragment extends Fragment {
 
             switch (position){
                 case 0 :
-                    return "Sensor 1";
+                    return "Sensory";
                 case 1 :
-                    return "Sensor 2";
+                    return "LED";
             }
             return null;
         }
