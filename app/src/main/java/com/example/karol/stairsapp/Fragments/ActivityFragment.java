@@ -1,4 +1,4 @@
-package com.example.karol.stairsapp;
+package com.example.karol.stairsapp.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,11 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.karol.stairsapp.LED;
+import com.example.karol.stairsapp.MainActivity;
+import com.example.karol.stairsapp.R;
+import com.example.karol.stairsapp.Sensor;
 import com.example.karol.stairsapp.SensorTabs.SensorTab;
 import com.example.karol.stairsapp.SensorTabs.LedTab;
 
@@ -24,15 +27,19 @@ public class ActivityFragment extends Fragment {
     public static ViewPager viewPager;
     public static int int_items = 2 ;
 
+    Sensor[] sensorsArray;
+    LED[] ledsArray;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         /**
          *Inflate tab_layout and setup Views.
          */
-        View x =  inflater.inflate(R.layout.sensors_layout,null);
+        View x =  inflater.inflate(R.layout.activity_layout,null);
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
+//        ((MainActivity)getActitivity()).ledArray[1] = null;
 
         /**
          *Set an Apater for the View Pager

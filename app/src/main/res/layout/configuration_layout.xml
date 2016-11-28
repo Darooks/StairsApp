@@ -1,35 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:weightSum="1">
 
-    <TextView
-        android:text="Status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp"
-        android:id="@+id/textView2" />
-
-    <TextView
-        android:text="Jasność"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/seekbar_brightness"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="11dp"
-        android:layout_marginBottom="30dp"
-        android:id="@+id/brithness_title"
-        android:textColor="@android:color/black" />
-
-    <SeekBar
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:id="@+id/seekbar_brightness"
-        android:progress="0"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabsConfiguration"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        android:background="#6d4c41"
         android:layout_width="match_parent"
-        android:max="4095"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentEnd="true" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:tabIndicatorColor="#81d4fa"
+        app:tabSelectedTextColor="#81d4fa"
+        app:tabTextColor="#e1f5fe">
+    </android.support.design.widget.TabLayout>
 
-</RelativeLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpagerConfiguration"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tabs">
+    </android.support.v4.view.ViewPager>
+
+</LinearLayout>

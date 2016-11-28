@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:id="@+id/brightness_SeekBar"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:max="4095" />
+
+    <TextView
+        android:text="Typ oświetlenia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
+        android:id="@+id/textView7"
+        android:textColor="@android:color/black"
+        android:layout_below="@+id/brightness_SeekBar"
+        android:layout_alignStart="@+id/textView2"
+        android:textSize="16sp" />
+
+    <TextView
+        android:text="Opóźnienie oświetlenia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lightType_spinner"
+        android:layout_alignStart="@+id/textView7"
+        android:layout_marginTop="35dp"
+        android:id="@+id/textView8"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <EditText
+        android:layout_height="50px"
+        android:inputType="numberSigned"
+        android:ems="10"
+        android:id="@+id/delay_editText"
+        android:layout_width="100px"
+        android:textColor="@android:color/black"
+        android:layout_alignTop="@+id/textView8"
+        android:layout_alignEnd="@+id/lightType_spinner"
+        android:background="@drawable/edittext_bg" />
+
+    <TextView
+        android:text="Jasność"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="44dp"
+        android:id="@+id/textView2"
+        android:textColor="@android:color/black"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textSize="16sp" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lightType_spinner"
+        android:layout_marginEnd="32dp"
+        android:layout_alignTop="@+id/textView7"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
