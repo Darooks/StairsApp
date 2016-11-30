@@ -38,4 +38,72 @@
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="28dp"
+        android:id="@+id/reactionCount_textView" />
+
+    <TextView
+        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView5"
+        android:layout_alignEnd="@+id/reactionCount_textView"
+        android:id="@+id/activeSensor_textView" />
+
+    <TextView
+        android:text="Dostępny Ram w ESP:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView5"
+        android:layout_alignStart="@+id/textView5"
+        android:layout_marginTop="35dp"
+        android:id="@+id/textView15" />
+
+    <TextView
+        android:text="Dostępny Ram w AVR:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView15"
+        android:layout_alignStart="@+id/textView15"
+        android:layout_marginTop="36dp"
+        android:id="@+id/textView16" />
+
+    <TextView
+        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView16"
+        android:layout_alignEnd="@+id/ramESP_textView"
+        android:id="@+id/ramAVRtextView" />
+
+    <TextView
+        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ramESP_textView"
+        android:layout_above="@+id/textView16"
+        android:layout_alignEnd="@+id/activeSensor_textView" />
+
+    <TextView
+        android:text="Brak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView"
+        android:layout_alignEnd="@+id/reactionCount_textView"
+        android:id="@+id/sensorState_textView" />
+
+    <TextView
+        android:text="Brak połączenia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/connectionState_textView"
+        android:layout_above="@+id/textView4"
+        android:layout_alignEnd="@+id/reactionCount_textView" />
+
 </RelativeLayout>

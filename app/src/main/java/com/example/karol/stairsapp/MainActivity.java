@@ -19,13 +19,18 @@ import com.example.karol.stairsapp.Fragments.ActivityFragment;
 import com.example.karol.stairsapp.Fragments.ConfigurationFragment;
 import com.example.karol.stairsapp.Fragments.ConnectionFragment;
 import com.example.karol.stairsapp.Fragments.StatusFragment;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 
@@ -37,16 +42,23 @@ public class MainActivity extends AppCompatActivity
 
     public static ArrayList<Sensor> SENSORS_ARRAY = new ArrayList<Sensor>();
     public static ArrayList<LED> LED_ARRAY = new ArrayList<LED>();
+    public static boolean isConnected = false;
+    public static boolean isStateInited = false;
 
     public static SensorAdapter sensorAdapter;
 
     public LightConfiguration lightConfiguration = new LightConfiguration();
+    public static SystemStatus systemStatus = new SystemStatus();
 
     static String MQTTHOST = "tcp://m20.cloudmqtt.com:19951";
     static String USERNAME = "hjlgqbkb";
     static String PASSWORD = "k_fHdTL-RXmW";
+
     public static String publisherTopic = "esp-mqtt-topic";
+    public static String subscriberTopic = "android-mqtt-topic";
+
     public static MqttAndroidClient clientPublisher = null;
+    public static MqttAndroidClient clientSubscriber = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,8 +159,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void MakeConnectionToMqtt() {
-        /* <MQTT connection> */
-        String clientId = MqttClient.generateClientId();
+        /* <MQTT publisher> */
         clientPublisher = new MqttAndroidClient(this, MQTTHOST,
                 "pahomqttpublish1");
         MqttConnectOptions options = new MqttConnectOptions();
@@ -162,21 +173,94 @@ public class MainActivity extends AppCompatActivity
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                     Log.d(TAG, "onSuccess");
+                    if (isStateInited)
+                        StatusFragment.handler.sendEmptyMessage(0);
+                    isConnected = true;
                     Toast.makeText(getApplicationContext(), "Connected to mqtt", Toast.LENGTH_LONG).show();
-
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // Something went wrong e.g. connection timeout or firewall problems
                     Log.d(TAG, "onFailure" + exception);
-                    Toast.makeText(getApplicationContext(), "Failed to connect to mqtt! " + exception, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Publisher failed to connect to mqtt! " + exception, Toast.LENGTH_LONG).show();
                     System.out.print(exception);
                 }
             });
         } catch (MqttException e) {
             e.printStackTrace();
         }
-        /* </MQTT connection> */
+        /* </MQTT publisher> */
+
+        /* <MQTT subscriber> */
+        clientSubscriber = new MqttAndroidClient(this, MQTTHOST,
+                "pahomqttsubscribe1");
+        options.setUserName(USERNAME);
+        options.setPassword(PASSWORD.toCharArray());
+
+        try {
+            IMqttToken token = clientSubscriber.connect(options);
+            token.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // We are connected
+                    isConnected = true;
+                    if (isStateInited)
+                        StatusFragment.handler.sendEmptyMessage(0);
+                    Log.d(TAG, "onSuccess");
+                    SubscribeMqtt();
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    // Something went wrong e.g. connection timeout or firewall problems
+                    Log.d(TAG, "onFailure" + exception);
+                    Toast.makeText(getApplicationContext(), "Subscriber failed to connect to mqtt! " + exception, Toast.LENGTH_LONG).show();
+                    System.out.print(exception);
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+        clientSubscriber.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                Gson gson = new Gson();
+                String messageString = new String(message.getPayload());
+                Container container = gson.fromJson(messageString, Container.class);
+                LinkedTreeMap map = (LinkedTreeMap) container.getObject();
+
+                switch (container.getMsgType()) {
+                    case "SYSTEM_STATUS":
+                        systemStatus.fromTreeMap(map);
+                        if (isStateInited)
+                            StatusFragment.handler.sendEmptyMessage(0);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
+        /* <MQTT subscriber> */
+    }
+
+    private void SubscribeMqtt() {
+        try {
+            clientSubscriber.subscribe(subscriberTopic, 0);
+        }
+        catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
 }
