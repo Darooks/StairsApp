@@ -121,7 +121,7 @@ public class GeneralTab extends Fragment {
         container.setObject(globalLedConfiguration);
 
         String messageToSend = container.getStringJson();
-        Toast.makeText(getActivity(), messageToSend, Toast.LENGTH_LONG).show();
+        // Toast.makeText(getActivity(), messageToSend, Toast.LENGTH_LONG).show();
 
         byte[] encodedPayload = new byte[0];
         try {

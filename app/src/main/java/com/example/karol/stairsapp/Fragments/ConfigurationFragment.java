@@ -11,12 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.karol.stairsapp.ConfigurationTabs.OrderTab;
 import com.example.karol.stairsapp.ConfigurationTabs.GeneralTab;
-import com.example.karol.stairsapp.ConfigurationTabs.DebugTab;
 import com.example.karol.stairsapp.R;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -40,7 +38,7 @@ public class ConfigurationFragment extends Fragment{
     View myView;
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
-    public static int int_items = 3 ;
+    public static int int_items = 2 ;
 
     private int brightness = 0;
 
@@ -86,7 +84,6 @@ public class ConfigurationFragment extends Fragment{
             switch (position){
                 case 0 : return new OrderTab();
                 case 1 : return new GeneralTab();
-                case 2 : return new DebugTab();
             }
 
             return null;
@@ -109,8 +106,6 @@ public class ConfigurationFragment extends Fragment{
                     return "Kolejność";
                 case 1 :
                     return "Ogólne";
-                case 2 :
-                    return "Debug";
             }
             return null;
         }

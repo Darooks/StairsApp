@@ -19,6 +19,7 @@ import com.example.karol.stairsapp.Fragments.ActivityFragment;
 import com.example.karol.stairsapp.Fragments.ConfigurationFragment;
 import com.example.karol.stairsapp.Fragments.ConnectionFragment;
 import com.example.karol.stairsapp.Fragments.StatusFragment;
+import com.example.karol.stairsapp.Fragments.WifiConfigFragment;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -133,12 +134,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        /* Wykonianie obiektu ktory ma byc przesylany pomiedzy fragmentami */
-//        android.support.v4.app.FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-//        Bundle bundle = new Bundle();
-
         if (id == R.id.nav_sensors) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new ActivityFragment()).commit();
@@ -151,6 +146,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_connection) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new ConnectionFragment()).commit();
+        } else if (id == R.id.nav_wificonfig) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new WifiConfigFragment()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
