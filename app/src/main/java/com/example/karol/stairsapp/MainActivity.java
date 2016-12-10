@@ -36,6 +36,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -250,6 +251,12 @@ public class MainActivity extends AppCompatActivity
                         if (isStateInited)
                             StatusFragment.handler.sendEmptyMessage(0);
                         break;
+                    case "SENSOR_CONFIG_REQUEST":
+                        publishSensors();
+                        break;
+                    case "LED_CONFIG_REQUEST":
+                        publishLED();
+                        break;
                     default:
                         break;
                 }
@@ -325,5 +332,49 @@ public class MainActivity extends AppCompatActivity
         editor.putString("USERNAME", USERNAME);
         editor.putString("PASSWORD", PASSWORD);
         editor.commit();
+    }
+
+    public void publishSensors() {
+
+        for (Sensor sensor : SENSORS_ARRAY) {
+
+            int position = 0;
+            if (COMPONENTS_ORDER_ARRAY.contains(sensor.sensorId))
+                position = COMPONENTS_ORDER_ARRAY.indexOf(sensor.sensorId);
+
+            String messageToSend = "{\"msgType\":\"SENSOR_CONFIG\", \"object\":{\"hardwareId\":"+ position +",\"type\":\"PIR\",\"order\":" + String.valueOf(position)
+                    + ",\"enabled\":" + String.valueOf(sensor.active) + "}}";
+
+            byte[] encodedPayload = new byte[0];
+            try {
+                encodedPayload = messageToSend.getBytes("UTF-8");
+                MqttMessage message = new MqttMessage(encodedPayload);
+                clientPublisher.publish(publisherTopic, message);
+            } catch (UnsupportedEncodingException | MqttException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void publishLED() {
+
+        for (LED led : LED_ARRAY) {
+
+            int position = 0;
+            if (COMPONENTS_ORDER_ARRAY.contains(led.ledId))
+                position = COMPONENTS_ORDER_ARRAY.indexOf(led.ledId);
+
+            String messageToSend = "{\"msgType\":\"SENSOR_CONFIG\", \"object\":{\"hardwareId\":"+ position +",\"type\":\"PIR\",\"order\":" + String.valueOf(position)
+                    + ",\"enabled\":" + String.valueOf(led.active) + "}}";
+
+            byte[] encodedPayload = new byte[0];
+            try {
+                encodedPayload = messageToSend.getBytes("UTF-8");
+                MqttMessage message = new MqttMessage(encodedPayload);
+                clientPublisher.publish(publisherTopic, message);
+            } catch (UnsupportedEncodingException | MqttException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
