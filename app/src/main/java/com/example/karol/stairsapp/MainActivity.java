@@ -37,6 +37,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity
 
     public static ArrayList<Sensor> SENSORS_ARRAY = new ArrayList<Sensor>();
     public static ArrayList<LED> LED_ARRAY = new ArrayList<LED>();
+    public static List<String> COMPONENTS_ORDER_ARRAY = new ArrayList<String>();
     public static boolean isConnected = false;
     public static boolean isStateInited = false;
 
