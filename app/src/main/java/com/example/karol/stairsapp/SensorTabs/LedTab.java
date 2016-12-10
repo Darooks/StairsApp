@@ -21,7 +21,6 @@ import java.util.ArrayList;
  */
 
 public class LedTab extends Fragment {
-
     ListView ledListView;
     ArrayList<LED> ledList;
     LedAdapter ledAdapter;

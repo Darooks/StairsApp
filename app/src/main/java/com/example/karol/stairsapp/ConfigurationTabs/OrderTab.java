@@ -15,10 +15,14 @@ import com.example.karol.stairsapp.R;
 
 public class OrderTab extends Fragment {
 
+    View myView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.single_tab_temp_layout, null);
+        myView = inflater.inflate(R.layout.tab_order_layout, null);
+
+        return myView;
     }
 
 }

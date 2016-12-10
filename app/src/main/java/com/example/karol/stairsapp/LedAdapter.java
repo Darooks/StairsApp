@@ -35,7 +35,7 @@ public class LedAdapter extends ArrayAdapter<LED> {
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
         convertView = inflater.inflate(R.layout.row, parent, false);
         TextView name = (TextView) convertView.findViewById(R.id.name_chk_box);
-        CheckBox cb = (CheckBox) convertView.findViewById(R.id.chk_box);
+        final CheckBox cb = (CheckBox) convertView.findViewById(R.id.chk_box);
 
         name.setText(ledList.get(position).ledId);
         cb.setChecked(ledList.get(position).active);
@@ -44,9 +44,9 @@ public class LedAdapter extends ArrayAdapter<LED> {
             @Override
             public void onClick(View view) {
                 if (MainActivity.LED_ARRAY.get(position).active)
-                    MainActivity.LED_ARRAY.get(position).active = true;
-                else
                     MainActivity.LED_ARRAY.get(position).active = false;
+                else
+                    MainActivity.LED_ARRAY.get(position).active = true;
             }
         });
 

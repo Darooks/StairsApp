@@ -2,6 +2,9 @@ package com.example.karol.stairsapp;
 
 //import android.support.v4.app.FragmentManager;
 //import android.support.v4.app.Fragment;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -51,9 +54,9 @@ public class MainActivity extends AppCompatActivity
     public LightConfiguration lightConfiguration = new LightConfiguration();
     public static SystemStatus systemStatus = new SystemStatus();
 
-    static String MQTTHOST = "tcp://m20.cloudmqtt.com:19951";
-    static String USERNAME = "hjlgqbkb";
-    static String PASSWORD = "k_fHdTL-RXmW";
+    public static String MQTTHOST = "tcp://m20.cloudmqtt.com:19951";
+    public static String USERNAME = "hjlgqbkb";
+    public static String PASSWORD = "k_fHdTL-RXmW";
 
     public static String publisherTopic = "esp-mqtt-topic";
     public static String subscriberTopic = "android-mqtt-topic";
@@ -70,6 +73,11 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("Config", 0);
+
+        MQTTHOST = sharedPreferences.getString("MQTTHOST", "tcp://m20.cloudmqtt.com:19951");
+        USERNAME = sharedPreferences.getString("USERNAME", "hjlgqbkb");
+        PASSWORD = sharedPreferences.getString("PASSWORD", "k_fHdTL-RXmW");
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -251,6 +259,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
         /* <MQTT subscriber> */
+
+
     }
 
     private void SubscribeMqtt() {
@@ -260,5 +270,58 @@ public class MainActivity extends AppCompatActivity
         catch (MqttException e) {
             e.printStackTrace();
         }
+    }
+
+    public void Reconnect() {
+        Toast.makeText(this, "Reconnecting...", Toast.LENGTH_SHORT).show();
+        try {
+            clientPublisher.disconnect();
+        } catch (MqttException e) {
+            Toast.makeText(this, "Failed disconnection from MQTT publisher", Toast.LENGTH_LONG).show();
+        }
+
+        try {
+            clientSubscriber.disconnect();
+        } catch (MqttException e) {
+            Toast.makeText(this, "Failed disconnection from MQTT subscriber", Toast.LENGTH_LONG).show();
+        }
+
+        clientPublisher.unregisterResources();
+        clientSubscriber.unregisterResources();
+
+        MakeConnectionToMqtt();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("MQTTHOST", MQTTHOST);
+        outState.putString("USERNAME", USERNAME);
+        outState.putString("PASSWORD", PASSWORD);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        MQTTHOST = savedInstanceState.getString("MQTTHOST", "tcp://m20.cloudmqtt.com:19951");
+        USERNAME = savedInstanceState.getString("USERNAME", "hjlgqbkb");
+        PASSWORD = savedInstanceState.getString("PASSWORD", "k_fHdTL-RXmW");
+
+        Toast.makeText(this, "Saved instance " + MQTTHOST, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Config", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("MQTTHOST", MQTTHOST);
+        editor.putString("USERNAME", USERNAME);
+        editor.putString("PASSWORD", PASSWORD);
+        editor.commit();
     }
 }
