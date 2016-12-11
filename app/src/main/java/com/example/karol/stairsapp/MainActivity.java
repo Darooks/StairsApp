@@ -5,6 +5,7 @@ package com.example.karol.stairsapp;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -23,6 +24,8 @@ import com.example.karol.stairsapp.Fragments.ConfigurationFragment;
 import com.example.karol.stairsapp.Fragments.ConnectionFragment;
 import com.example.karol.stairsapp.Fragments.StatusFragment;
 import com.example.karol.stairsapp.Fragments.WifiConfigFragment;
+import com.example.karol.stairsapp.SensorTabs.LedTab;
+import com.example.karol.stairsapp.SensorTabs.SensorTab;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -39,6 +42,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.ContentValues.TAG;
 
@@ -51,6 +55,9 @@ public class MainActivity extends AppCompatActivity
     public static List<String> COMPONENTS_ORDER_ARRAY = new ArrayList<String>();
     public static boolean isConnected = false;
     public static boolean isStateInited = false;
+    public static boolean isSensorTabInited = false;
+    public static boolean isLedTabInited = false;
+    private boolean ledSensorsLoaded = false;
 
     public static SensorAdapter sensorAdapter;
 
@@ -67,11 +74,14 @@ public class MainActivity extends AppCompatActivity
     public static MqttAndroidClient clientPublisher = null;
     public static MqttAndroidClient clientSubscriber = null;
 
+    public int ledCount = 0;
+    public int sensorCount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitVariables();
-        MakeConnectionToMqtt();
+        //InitVariables();
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -81,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         MQTTHOST = sharedPreferences.getString("MQTTHOST", "tcp://m20.cloudmqtt.com:19951");
         USERNAME = sharedPreferences.getString("USERNAME", "hjlgqbkb");
         PASSWORD = sharedPreferences.getString("PASSWORD", "k_fHdTL-RXmW");
-
+        MakeConnectionToMqtt();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -93,17 +103,25 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
+
+       //PublishRequest();
     }
 
     public void InitVariables() {
-        for (int i = 1; i <= 6; i++) {
+        SENSORS_ARRAY.clear();
+        LED_ARRAY.clear();
+        for (int i = 1; i <= sensorCount; i++) {
             Sensor sensor = new Sensor("Sensor " + String.valueOf(i));
             SENSORS_ARRAY.add(sensor);
         }
-        for (int i = 1; i <= 16; i++) {
+        for (int i = 1; i <= ledCount; i++) {
             LED led = new LED("LED " + String.valueOf(i));
             LED_ARRAY.add(led);
         }
+
+        orderComponents();
+        publishSensors();
+        publishLEDs();
     }
 
     @Override
@@ -131,9 +149,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -186,6 +204,7 @@ public class MainActivity extends AppCompatActivity
                         StatusFragment.handler.sendEmptyMessage(0);
                     isConnected = true;
                     Toast.makeText(getApplicationContext(), "Connected to mqtt", Toast.LENGTH_LONG).show();
+                    PublishRequest();
                 }
 
                 @Override
@@ -250,12 +269,20 @@ public class MainActivity extends AppCompatActivity
                         systemStatus.fromTreeMap(map);
                         if (isStateInited)
                             StatusFragment.handler.sendEmptyMessage(0);
+                        if (!ledSensorsLoaded) {
+                            GetSensordAndLeds();
+                            if (isLedTabInited)
+                                LedTab.handler.sendEmptyMessage(0);
+                            if (isSensorTabInited)
+                                SensorTab.handler.sendEmptyMessage(0);
+                            ledSensorsLoaded = true;
+                        }
                         break;
                     case "SENSOR_CONFIG_REQUEST":
                         publishSensors();
                         break;
                     case "LED_CONFIG_REQUEST":
-                        publishLED();
+                        publishLEDs();
                         break;
                     default:
                         break;
@@ -335,15 +362,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void publishSensors() {
-
+        int counter = 0;
         for (Sensor sensor : SENSORS_ARRAY) {
 
             int position = 0;
             if (COMPONENTS_ORDER_ARRAY.contains(sensor.sensorId))
                 position = COMPONENTS_ORDER_ARRAY.indexOf(sensor.sensorId);
-
-            String messageToSend = "{\"msgType\":\"SENSOR_CONFIG\", \"object\":{\"hardwareId\":"+ position +",\"type\":\"PIR\",\"order\":" + String.valueOf(position)
-                    + ",\"enabled\":" + String.valueOf(sensor.active) + "}}";
+            int enabled = sensor.active ? 1 : 0;
+            String messageToSend = "{\"msgType\":\"SENSOR_CONFIG\", \"object\":{\"hardwareId\":"+ counter +",\"type\":\"PIR\",\"order\":" + String.valueOf(position)
+                    + ",\"enabled\":" + enabled + "}}";
 
             byte[] encodedPayload = new byte[0];
             try {
@@ -353,19 +380,21 @@ public class MainActivity extends AppCompatActivity
             } catch (UnsupportedEncodingException | MqttException e) {
                 e.printStackTrace();
             }
+            counter++;
         }
     }
 
-    public void publishLED() {
-
+    public void publishLEDs() {
+        int counter = 0;
         for (LED led : LED_ARRAY) {
 
             int position = 0;
             if (COMPONENTS_ORDER_ARRAY.contains(led.ledId))
                 position = COMPONENTS_ORDER_ARRAY.indexOf(led.ledId);
 
-            String messageToSend = "{\"msgType\":\"SENSOR_CONFIG\", \"object\":{\"hardwareId\":"+ position +",\"type\":\"PIR\",\"order\":" + String.valueOf(position)
-                    + ",\"enabled\":" + String.valueOf(led.active) + "}}";
+            int enabled = led.active ? 1 : 0;
+            String messageToSend = "{\"msgType\":\"LED_CONFIG\", \"object\":{\"hardwareId\":"+ counter +",\"order\":" + String.valueOf(position)
+                    + ",\"enabled\":" + enabled + "}}";
 
             byte[] encodedPayload = new byte[0];
             try {
@@ -375,6 +404,120 @@ public class MainActivity extends AppCompatActivity
             } catch (UnsupportedEncodingException | MqttException e) {
                 e.printStackTrace();
             }
+            counter++;
+            SystemClock.sleep(30);
         }
+    }
+
+    public void PublishRequest() {
+        Container container = new Container();
+        container.setMsgType("SYSTEM_STATUS_REQUEST");
+
+        String messageToSend = container.getStringJson();
+
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = messageToSend.getBytes("UTF-8");
+            MqttMessage message = new MqttMessage(encodedPayload);
+            clientPublisher.publish(publisherTopic, message);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void PublishSensor(Sensor sensor) {
+        int position = 0;
+        if (COMPONENTS_ORDER_ARRAY.contains(sensor.sensorId))
+            position = COMPONENTS_ORDER_ARRAY.indexOf(sensor.sensorId);
+
+        int enabled = sensor.active ? 1 : 0;
+        String messageToSend = "{\"msgType\":\"SENSOR_CONFIG\", \"object\":{\"hardwareId\":\""+ sensor.sensorId +"\",\"type\":\"PIR\",\"order\":" + String.valueOf(position)
+                + ",\"enabled\":" + sensor.active + "}}";
+
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = messageToSend.getBytes("UTF-8");
+            MqttMessage message = new MqttMessage(encodedPayload);
+            clientPublisher.publish(publisherTopic, message);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void PublishLed(LED led) {
+        int position = 0;
+        if (COMPONENTS_ORDER_ARRAY.contains(led.ledId))
+            position = COMPONENTS_ORDER_ARRAY.indexOf(led.ledId);
+
+        int enabled = led.active ? 1 : 0;
+        String messageToSend = "{\"msgType\":\"LED_CONFIG\", \"object\":{\"hardwareId\":\""+ led.ledId +"\",\"type\":\"PIR\",\"order\":" + String.valueOf(position)
+                + ",\"enabled\":" + enabled + "}}";
+
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = messageToSend.getBytes("UTF-8");
+            MqttMessage message = new MqttMessage(encodedPayload);
+            clientPublisher.publish(publisherTopic, message);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void GetSensordAndLeds() {
+        sensorCount = systemStatus.getSensorsCount();
+        ledCount = systemStatus.getLedsCount();
+        InitVariables();
+    }
+
+    public void orderComponents() {
+        COMPONENTS_ORDER_ARRAY.clear();
+        int active_sensors = 0;
+        int active_led = 0;
+
+        for (Sensor it : SENSORS_ARRAY) {
+            if (it.active)
+                active_sensors++;
+        }
+
+        for (LED it : LED_ARRAY) {
+            if (it.active)
+                active_led++;
+        }
+
+        if (active_sensors == 0)
+            return;
+
+        int median;
+        if (active_led != 0)
+            median = active_led / active_sensors;
+        else
+            median = 0;
+
+        int counter = 0;
+        int led_counter = 0;
+
+        if (SENSORS_ARRAY.size() > 0) {
+            for (Sensor sensor : SENSORS_ARRAY) {
+                if (sensor.active) {
+                    COMPONENTS_ORDER_ARRAY.add(sensor.sensorId);
+                    for (int i = led_counter; i < LED_ARRAY.size(); i++) {
+                        if (LED_ARRAY.get(i).active) {
+                            COMPONENTS_ORDER_ARRAY.add(LED_ARRAY.get(i).ledId);
+                            counter++;
+                            led_counter++;
+                        }
+
+                        if (counter >= median)
+                            break;
+                    }
+                }
+            }
+
+            if (led_counter < LED_ARRAY.size())
+                for (int i = led_counter; i < LED_ARRAY.size(); i++)
+                    if (LED_ARRAY.get(i).active)
+                        COMPONENTS_ORDER_ARRAY.add(LED_ARRAY.get(i).ledId);
+        }
+
     }
 }

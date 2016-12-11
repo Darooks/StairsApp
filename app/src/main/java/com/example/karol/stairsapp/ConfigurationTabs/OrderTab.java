@@ -44,7 +44,7 @@ public class OrderTab extends Fragment {
         return myView;
     }
 
-    private void orderComponents() {
+    public void orderComponents() {
         int active_sensors = 0;
         int active_led = 0;
 

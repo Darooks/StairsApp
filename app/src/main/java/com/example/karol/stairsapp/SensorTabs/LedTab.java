@@ -1,6 +1,8 @@
 package com.example.karol.stairsapp.SensorTabs;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,11 +23,21 @@ import java.util.ArrayList;
  */
 
 public class LedTab extends Fragment {
-    ListView ledListView;
-    ArrayList<LED> ledList;
-    LedAdapter ledAdapter;
+    public static ListView ledListView;
+    public static ArrayList<LED> ledList;
+    public static LedAdapter ledAdapter;
 
-    View myView;
+    public static View myView;
+
+    public static Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            ledListView = (ListView) myView.findViewById(R.id.led_listView);
+            ledList = MainActivity.LED_ARRAY;
+            ledAdapter = new LedAdapter(ledList, myView.getContext());
+            ledListView.setAdapter(ledAdapter);
+        }
+    };
 
     @Nullable
     @Override
@@ -36,6 +48,7 @@ public class LedTab extends Fragment {
         ledList = MainActivity.LED_ARRAY;
         ledAdapter = new LedAdapter(ledList, getActivity());
         ledListView.setAdapter(ledAdapter);
+        MainActivity.isLedTabInited = true;
 
         return myView;
     }

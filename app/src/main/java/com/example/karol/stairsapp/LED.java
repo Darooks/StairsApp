@@ -10,6 +10,6 @@ public class LED {
 
     public LED(String ledId) {
         this.ledId = ledId;
-        this.active = false;
+        this.active = true;
     }
 }

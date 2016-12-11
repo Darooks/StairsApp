@@ -10,6 +10,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.karol.stairsapp.SensorTabs.LedTab;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,12 @@ public class LedAdapter extends ArrayAdapter<LED> {
                     MainActivity.LED_ARRAY.get(position).active = false;
                 else
                     MainActivity.LED_ARRAY.get(position).active = true;
+
+                //((MainActivity)getContext()).orderComponents();
+                ((MainActivity)getContext()).publishSensors();
+                ((MainActivity)getContext()).publishLEDs();
+//                ((MainActivity)getContext()).PublishLed(MainActivity.LED_ARRAY.get(position));
+//                MainActivity.PublishLed(MainActivity.LED_ARRAY.get(position));
             }
         });
 

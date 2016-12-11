@@ -54,7 +54,11 @@ public class SensorAdapter extends ArrayAdapter<Sensor> {
                 else
                     MainActivity.SENSORS_ARRAY.get(position).active = true;
 
-                Log.d("ck", MainActivity.SENSORS_ARRAY.get(position).sensorId.toString() + " " + String.valueOf(MainActivity.SENSORS_ARRAY.get(position).active));
+                ((MainActivity)getContext()).orderComponents();
+                ((MainActivity)getContext()).publishSensors();
+                ((MainActivity)getContext()).publishLEDs();
+//                ((MainActivity)getContext()).PublishSensor(MainActivity.SENSORS_ARRAY.get(position));
+//                MainActivity.PublishSensor(MainActivity.SENSORS_ARRAY.get(position));
             }
         });
 

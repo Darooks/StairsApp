@@ -6,6 +6,8 @@ package com.example.karol.stairsapp.SensorTabs;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,11 +29,21 @@ import com.example.karol.stairsapp.SensorAdapter;
 import java.util.ArrayList;
 
 public class SensorTab extends Fragment {
-    ListView sensorListView;
-    ArrayList<Sensor> sensorList;
-    SensorAdapter sensorAdapter;
+    public static ListView sensorListView;
+    public static ArrayList<Sensor> sensorList;
+    public static SensorAdapter sensorAdapter;
 
-    View myView;
+    public static View myView;
+
+    public static Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            sensorListView = (ListView) myView.findViewById(R.id.sensor_listView);
+            sensorList = MainActivity.SENSORS_ARRAY;
+            sensorAdapter = new SensorAdapter(sensorList, myView.getContext());
+            sensorListView.setAdapter(sensorAdapter);
+        }
+    };
 
     @Nullable
     @Override
@@ -41,6 +53,7 @@ public class SensorTab extends Fragment {
         sensorList = MainActivity.SENSORS_ARRAY;
         sensorAdapter = new SensorAdapter(sensorList, getActivity());
         sensorListView.setAdapter(sensorAdapter);
+        MainActivity.isSensorTabInited = true;
 
         return myView;
     }

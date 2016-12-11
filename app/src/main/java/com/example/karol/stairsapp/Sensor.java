@@ -18,6 +18,6 @@ public class Sensor {
 
     public Sensor(String sensorId) {
         this.sensorId = sensorId;
-        this.active = false;
+        this.active = true;
     }
 }
